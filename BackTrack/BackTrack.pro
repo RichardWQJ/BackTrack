@@ -19,7 +19,8 @@ SOURCES += main.cpp\
 
 HEADERS  += backtrack.h \
     calculater.h \
-    paintwidget.h
+    paintwidget.h \
+    singleton.h
 
 FORMS    += backtrack.ui
 

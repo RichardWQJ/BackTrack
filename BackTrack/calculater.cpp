@@ -2,6 +2,17 @@
 #include "calculater.h"
 #include <QDebug>
 
+Calculater::Calculater()
+{
+    InitRealVectorInfo();
+    InitYRealVectorInfo();
+}
+
+Calculater::~Calculater()
+{
+
+}
+
 void Calculater::InitRealVectorInfo()
 {
     InitYRealVectorInfo();

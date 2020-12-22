@@ -8,6 +8,8 @@
 #include <QDebug>
 #include <QPalette>
 #include <QFont>
+#include <QAction>
+#include "calculater.h"
 
 BackTrack::BackTrack(QWidget *parent) :
     QMainWindow(parent),
@@ -17,6 +19,7 @@ BackTrack::BackTrack(QWidget *parent) :
     this->setFixedSize(MAIN_WIDGET_WIDTH, MAIN_WIDGET_HEIGTH);
     LoadStyleSheet();
     InitWidget();
+    InitConfigDialog();
 }
 
 BackTrack::~BackTrack()
@@ -51,9 +54,15 @@ void BackTrack::LoadStyleSheet()
 
 void BackTrack::InitWidget()
 {
-    int nMin = 0;
-    int nMax = 100;
-    int nSingleStep = 1;
+    pMenuBar = this->ui->menuBar;
+    pMenuA = new QMenu("配置");    // q则为Alt方式的快捷键
+
+    // 新建一个Action，然后加入到菜单A中
+    QAction* pActionA = new QAction("参数配置");
+    pMenuA->addAction(pActionA);
+
+    //　将菜单A再添加到MenuBar中
+    pMenuBar->addMenu(pMenuA);
 
     // 顺时针滑动条标签
     this->lableSliderForward = new QLabel(tr("        顺时针："));
@@ -126,8 +135,6 @@ void BackTrack::InitWidget()
     mainLayout2->addWidget(paintWidget);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
-//    mainLayout->setMargin(10);  //表示控件与窗体的左右边距
-//    mainLayout->setSpacing(5); //表示各个控件之间的上下间距
     mainLayout->addLayout(mainLayout1);
     mainLayout->addLayout(mainLayout2);
 
@@ -139,6 +146,110 @@ void BackTrack::InitWidget()
 
     connect(this->pSliderForward, SIGNAL(valueChanged(int)), paintWidget, SLOT(slotForwardAngleChanged(int)));
     connect(this->pSliderBackForward, SIGNAL(valueChanged(int)), paintWidget, SLOT(slotBackForwardAngleChanged(int)));
+
+    connect(pActionA, SIGNAL(triggered(bool)), this, SLOT(slotConfigDialogShow()));
+}
+
+void BackTrack::InitConfigDialog()
+{
+    configDialog = new QDialog(this);
+
+    lableConfig_mD = new QLabel(tr("车尾到车后轮的距离D:"));
+    spinboxConfig_mD = new QDoubleSpinBox();
+    spinboxConfig_mD->setRange(0.4, 0.8);
+    spinboxConfig_mD->setSingleStep(0.1);
+
+    lableConfig_mL = new QLabel(tr("车前后轮的轴距L:"));
+    spinboxConfig_mL = new QDoubleSpinBox();
+    spinboxConfig_mL->setRange(2.4, 3.2);
+    spinboxConfig_mL->setSingleStep(0.1);
+
+    lableConfig_mw = new QLabel(tr("车的轴长w:"));
+    spinboxConfig_mw = new QDoubleSpinBox();
+    spinboxConfig_mw->setRange(1.0, 1.8);
+    spinboxConfig_mw->setSingleStep(0.1);
+
+    lableConfig_mh = new QLabel(tr("camera的高度h:"));
+    spinboxConfig_mh = new QDoubleSpinBox();
+    spinboxConfig_mh->setRange(1.0, 2.0);
+    spinboxConfig_mh->setSingleStep(0.1);
+
+    lableConfig_mB = new QLabel(tr("摄像头中心线同水平面的夹角B:"));
+    spinboxConfig_mB = new QSpinBox();
+    spinboxConfig_mB->setRange(8, 16);
+    spinboxConfig_mB->setSingleStep(1);
+
+    lableConfig_mA = new QLabel(tr("摄像头张角的一半a:"));
+    spinboxConfig_mA = new QSpinBox();
+    spinboxConfig_mA->setRange(20, 60);
+    spinboxConfig_mA->setSingleStep(1);
+
+    lableConfigCameraW = new QLabel(tr("屏幕的宽度W:"));
+    spinboxConfigCameraW = new QDoubleSpinBox();
+    spinboxConfigCameraW->setRange(0.4, 1.2);
+    spinboxConfigCameraW->setSingleStep(0.1);
+
+    lableConfigCameraH = new QLabel(tr("屏幕的高度H:"));
+    spinboxConfigCameraH = new QDoubleSpinBox();
+    spinboxConfigCameraH->setRange(0.4, 1.0);
+    spinboxConfigCameraH->setSingleStep(0.1);
+
+    btnCancle = new QPushButton(tr("取消"));
+    btnSave = new QPushButton(tr("保存"));
+
+    QGridLayout *mainLayout = new QGridLayout;
+    mainLayout->addWidget(lableConfig_mD, 1, 1);
+    mainLayout->addWidget(spinboxConfig_mD, 1, 2);
+
+    mainLayout->addWidget(lableConfig_mL, 2, 1);
+    mainLayout->addWidget(spinboxConfig_mL, 2, 2);
+
+    mainLayout->addWidget(lableConfig_mw, 3, 1);
+    mainLayout->addWidget(spinboxConfig_mw, 3, 2);
+
+    mainLayout->addWidget(lableConfig_mh, 4, 1);
+    mainLayout->addWidget(spinboxConfig_mh, 4, 2);
+
+    mainLayout->addWidget(lableConfig_mB, 5, 1);
+    mainLayout->addWidget(spinboxConfig_mB, 5, 2);
+
+    mainLayout->addWidget(lableConfig_mA, 6, 1);
+    mainLayout->addWidget(spinboxConfig_mA, 6, 2);
+
+    mainLayout->addWidget(lableConfigCameraW, 7, 1);
+    mainLayout->addWidget(spinboxConfigCameraW, 7, 2);
+
+    mainLayout->addWidget(lableConfigCameraH, 8, 1);
+    mainLayout->addWidget(spinboxConfigCameraH, 8, 2);
+
+    mainLayout->addWidget(btnSave, 9, 1);
+    mainLayout->addWidget(btnCancle, 9, 2);
+
+    configDialog->setLayout(mainLayout);
+    configDialog->setFixedSize(250, 350);
+    configDialog->setWindowTitle(tr("配置基础信息"));
+
+    connect(this->configDialog, SIGNAL(rejected()), this, SLOT(slotMainWindowShow()));
+    connect(this->btnCancle, SIGNAL(clicked(bool)), this->configDialog, SLOT(close()));
+    connect(this->btnSave, SIGNAL(clicked(bool)), this, SLOT(slotSaveConfigData()));
+}
+
+void BackTrack::DataInitBeforeDialgDisplay()
+{
+    spinboxConfig_mD->setValue(Calculater::GetInstance()->Get_mD());
+    spinboxConfig_mL->setValue(Calculater::GetInstance()->Get_mL());
+    spinboxConfig_mw->setValue(Calculater::GetInstance()->Get_mw());
+    spinboxConfig_mh->setValue(Calculater::GetInstance()->Get_mh());
+    spinboxConfig_mB->setValue(Calculater::GetInstance()->Get_mB());
+    spinboxConfig_mA->setValue(Calculater::GetInstance()->Get_mA());
+    spinboxConfigCameraW->setValue(Calculater::GetInstance()->GetCameraWidth());
+    spinboxConfigCameraH->setValue(Calculater::GetInstance()->GetCameraHeight());
+}
+
+void BackTrack::DataSaveAfterClickSaveBtn()
+{
+    Calculater::GetInstance()->Set_mD(spinboxConfig_mD->value());
+    Calculater::GetInstance()->Set_mD(spinboxConfig_mD->value());
 }
 
 void BackTrack::slotForwardAngleChanged(int percent)
@@ -153,3 +264,22 @@ void BackTrack::slotBackForwardAngleChanged(int percent)
     this->currAngleBackForward->setText(QString::number(angle));
 }
 
+void BackTrack::slotConfigDialogShow()
+{
+    DataInitBeforeDialgDisplay();
+    this->configDialog->show();
+    this->hide();
+    qDebug() << "Main Window oughted to be hiden!";
+}
+
+void BackTrack::slotMainWindowShow()
+{
+    this->show();
+    qDebug() << "Main Window oughted to be show!";
+}
+
+void BackTrack::slotSaveConfigData()
+{
+    qDebug() << "slotSaveConfigData";
+    this->configDialog->close();
+}

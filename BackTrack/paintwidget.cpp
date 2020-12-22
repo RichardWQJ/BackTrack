@@ -2,13 +2,12 @@
 #include <QPen>
 #include "paintwidget.h"
 
-
 PaintWidget::PaintWidget(QWidget *parent) : QWidget(parent)
 {
     /*pix = QPixmap(WIN_WIGHT, WIN_HEIGHT);
     pix.fill(Qt::white);*/
 
-    this->calculater.InitRealVectorInfo();
+    this->calculater = Calculater::GetInstance();
     this->setFixedSize(PAINT_WIN_WIGHT, PAINT_WIN_HEIGHT);
     this->widgetWidth = this->geometry().width();
     this->widgetHeight = this->geometry().height();
@@ -134,17 +133,17 @@ void PaintWidget::drawTrack()
 
 void PaintWidget::drawForwardTrack()
 {
-    calculater.ComputeScreenPointsWhenForward(this->forwardAngle);
-    vectorLeft = calculater.vecScreenLeftPoint;
-    vectorRight = calculater.vecScreenRightPoint;
+    calculater->ComputeScreenPointsWhenForward(this->forwardAngle);
+    vectorLeft = calculater->vecScreenLeftPoint;
+    vectorRight = calculater->vecScreenRightPoint;
     drawTrack();
 }
 
 void PaintWidget::drawBackForwardTrack()
 {
-    calculater.ComputeScreenPointsWhenBackForward(this->backForwardAngle);
-    vectorLeft = calculater.vecScreenLeftPoint;
-    vectorRight = calculater.vecScreenRightPoint;
+    calculater->ComputeScreenPointsWhenBackForward(this->backForwardAngle);
+    vectorLeft = calculater->vecScreenLeftPoint;
+    vectorRight = calculater->vecScreenRightPoint;
     drawTrack();
 }
 

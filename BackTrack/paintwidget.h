@@ -41,7 +41,7 @@ private:
     CURRENT_MODE mode;
     int widgetWidth;
     int widgetHeight;
-    Calculater calculater;
+    Calculater *calculater;
 
     QVector<QPointF> vectorLeft;
     QVector<QPointF> vectorRight;
