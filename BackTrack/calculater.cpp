@@ -4,7 +4,6 @@
 
 Calculater::Calculater()
 {
-    InitRealVectorInfo();
     InitYRealVectorInfo();
 }
 
@@ -87,18 +86,18 @@ void Calculater::ComputeScreenPointsWhenForward(float angle)
 {
     for (int index = 0; index < SAMPLE_POINT_NUM; index++) {
         float yScrean = vecScreenYValue[index]; //ComputerYr(vecSampleYValue[index]);
-        float xLeft = ComputerXr_In(angle, vecSampleYValue[index]);
+        float xLeft = ComputerXr_In(angle, vecSampleYValue[index]) * m_Quotiety;
         QPointF pointLeft(xLeft, yScrean);
-//        qDebug() << "Left: (" << xLeft << ", " << yScrean << ")";
+        qDebug() << "Left: (" << xLeft << ", " << yScrean << ")";
 //        if (isnan(xLeft)) {
 //            qDebug() << "xLeft is nan! ";
 //            qDebug() << "angle: " << angle << ", vecSampleYValue[index]:" << vecSampleYValue[index];
 //        }
 
         vecScreenLeftPoint[index] = pointLeft;
-        float xRight = ComputerXr_Out(angle, vecSampleYValue[index]);
+        float xRight = ComputerXr_Out(angle, vecSampleYValue[index]) * m_Quotiety;
         QPointF pointRight(xRight, yScrean);
-//        qDebug() << "Right: (" << xRight << ", " << yScrean << ")";
+        qDebug() << "Right: (" << xRight << ", " << yScrean << ")";
 //        if (isnan(xRight)) {
 //            qDebug() << "xRight is nan! ";
 //            qDebug() << "angle: " << angle << ", vecSampleYValue[index]:" << vecSampleYValue[index];
@@ -112,9 +111,9 @@ void Calculater::ComputeScreenPointsWhenBackForward(float angle)
 {
     for (int index = 0; index < SAMPLE_POINT_NUM; index++) {
         float yScrean = vecScreenYValue[index]; //ComputerYr(vecSampleYValue[index]);
-        float xLeft = ComputerXr_In(angle, vecSampleYValue[index]) * (-1);
+        float xLeft = ComputerXr_In(angle, vecSampleYValue[index]) * (-1) * m_Quotiety;
         QPointF pointLeft(xLeft, yScrean);
-//        qDebug() << "Left: (" << xLeft << ", " << yScrean << ")";
+        qDebug() << "Left: (" << xLeft << ", " << yScrean << ")";
 //        if (isnan(xLeft)) {
 //            qDebug() << "xLeft is nan! ";
 //            qDebug() << "angle: " << angle << ", vecSampleYValue[index]:" << vecSampleYValue[index];
@@ -122,9 +121,9 @@ void Calculater::ComputeScreenPointsWhenBackForward(float angle)
 
         vecScreenLeftPoint[index] = pointLeft;
 
-        float xRight = ComputerXr_Out(angle, vecSampleYValue[index]) * (-1);
+        float xRight = ComputerXr_Out(angle, vecSampleYValue[index]) * (-1) * m_Quotiety;
         QPointF pointRight(xRight, yScrean);
-//        qDebug() << "Right: (" << xRight << ", " << yScrean << ")";
+        qDebug() << "Right: (" << xRight << ", " << yScrean << ")";
 //        if (isnan(xRight)) {
 //            qDebug() << "xRight is nan! ";
 //            qDebug() << "angle: " << angle << ", vecSampleYValue[index]:" << vecSampleYValue[index];
@@ -177,8 +176,8 @@ float Calculater::ComputerXr_Out(float angle, float y) {
     float secondStep = (float) qPow(firstStep, 0.5f);
     float x = secondStep - mL * Cot(angle);
 
-//    qDebug() << "ComputerXr_Out: " << "firstStep: " << firstStep << ", secondStep: " << secondStep << ", x: " << x;
-    return (float) ((x * cameraWidth) / ((qPow((Square(y) + Square(m_h)), 0.5f) * Tan(mA) * 2)));
+//    return (float) ((x * cameraWidth) / ((qPow((Square(y) + Square(m_h)), 0.5f) * Tan(mA) * 2))); //小文21的方法
+    return (float) ((x * cameraWidth) / (y * Tan(mA) * 2)); //最初的方法
 }
 
 float Calculater::ComputerXr_In(float angle, float y) { // 1, 3
@@ -188,8 +187,8 @@ float Calculater::ComputerXr_In(float angle, float y) { // 1, 3
     float secondStep = (float) qPow(firstStep, 0.5f);
     float x = secondStep - mL * Cot(angle);
 
-//    qDebug() << "ComputerXr_In: " << "firstStep: " << firstStep << ", secondStep: " << secondStep << ", x: " << x;
-    return (float) ((x * cameraWidth) / ((qPow((Square(y) + Square(m_h)), 0.5f) * Tan(mA) * 2)));
+//    return (float) ((x * cameraWidth) / ((qPow((Square(y) + Square(m_h)), 0.5f) * Tan(mA) * 2))); //小文21的方法
+    return (float) ((x * cameraWidth) / (y * Tan(mA) * 2)); //最初的方法
 }
 
 float Calculater::ComputerYr(float y)

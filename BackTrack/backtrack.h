@@ -104,6 +104,9 @@ private:
     QLabel *lableConfigCameraH; // 屏幕的高度H
     QDoubleSpinBox *spinboxConfigCameraH;
 
+    QLabel *lableConfigQuotiety; // 线性变化放大系数
+    QDoubleSpinBox *spinboxConfigQuotiety;
+
     QPushButton *btnCancle;
     QPushButton *btnSave;
     /******************************/

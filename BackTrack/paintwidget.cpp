@@ -150,7 +150,7 @@ void PaintWidget::drawBackForwardTrack()
 void PaintWidget::slotForwardAngleChanged(int percent)
 {
     qDebug() << "ForwardAngle Percent:" << percent;
-    forwardAngle = ((float) percent) / 100.0f * 25.0f;
+    forwardAngle = ((float) percent) / 100.0f * WHEEL_DEGREES_ALPHA;
     qDebug() << "ForwardAngle:" << forwardAngle;
     mode = FORWARD;
     this->update();
@@ -167,7 +167,7 @@ void PaintWidget::slotForwardAngleChanged(int percent)
 void PaintWidget::slotBackForwardAngleChanged(int percent)
 {
     qDebug() << "BackForwardAngle Percent:" << percent;
-    backForwardAngle = ((float) percent) / 100.0f * 25.0f;
+    backForwardAngle = ((float) percent) / 100.0f * WHEEL_DEGREES_ALPHA;
     qDebug() << "BackForwardAngle:" << backForwardAngle;
     mode = BACK_FORWARD;
     this->update();

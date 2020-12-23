@@ -8,7 +8,9 @@
 
 #define SAMPLE_REAL_WIDTH   180
 #define SAMPLE_REAL_HEIGTH  300
-#define SAMPLE_POINT_NUM    12  //(SAMPLE_REAL_HEIGTH / 10)
+#define SAMPLE_POINT_NUM    12
+
+#define WHEEL_DEGREES_ALPHA 25
 
 typedef struct myLine {
     QPoint startPoint;
@@ -35,6 +37,7 @@ public:
 
     inline float GetCameraWidth() { return cameraWidth; }
     inline float GetCameraHeight() { return cameraHeight; }
+    inline float GetQuotiety() { return m_Quotiety; }
 
     inline void Set_mD(float D) { mD = D; }
     inline void Set_mL(float L) { mL = L; }
@@ -46,6 +49,7 @@ public:
 
     inline void SetCameraWidth(float width) { cameraWidth = width; }
     inline void SetCameraHeight(float height) { cameraHeight = height; }
+    inline void SetQuotiety(float quotiety) { m_Quotiety = quotiety; }
 
     /***********************拟用的方法***********************/
     Calculater();
@@ -115,6 +119,8 @@ private:
     float cameraWidth = 0.8f;  // 屏幕的宽度W
     float cameraHeight = 0.6f;  // 屏幕的高度H
     /******************************************************/
+
+    float m_Quotiety = 1.0f;
 };
 
 #if 0

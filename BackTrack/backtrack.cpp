@@ -194,6 +194,11 @@ void BackTrack::InitConfigDialog()
     spinboxConfigCameraH->setRange(0.4, 1.0);
     spinboxConfigCameraH->setSingleStep(0.1);
 
+    lableConfigQuotiety = new QLabel(tr("变化趋势放大系数:"));
+    spinboxConfigQuotiety = new QDoubleSpinBox();
+    spinboxConfigQuotiety->setRange(1.0, 5.0);
+    spinboxConfigQuotiety->setSingleStep(0.1);
+
     btnCancle = new QPushButton(tr("取消"));
     btnSave = new QPushButton(tr("保存"));
 
@@ -222,8 +227,11 @@ void BackTrack::InitConfigDialog()
     mainLayout->addWidget(lableConfigCameraH, 8, 1);
     mainLayout->addWidget(spinboxConfigCameraH, 8, 2);
 
-    mainLayout->addWidget(btnSave, 9, 1);
-    mainLayout->addWidget(btnCancle, 9, 2);
+    mainLayout->addWidget(lableConfigQuotiety, 9, 1);
+    mainLayout->addWidget(spinboxConfigQuotiety, 9, 2);
+
+    mainLayout->addWidget(btnSave, 10, 1);
+    mainLayout->addWidget(btnCancle, 10, 2);
 
     configDialog->setLayout(mainLayout);
     configDialog->setFixedSize(250, 350);
@@ -244,12 +252,24 @@ void BackTrack::DataInitBeforeDialgDisplay()
     spinboxConfig_mA->setValue(Calculater::GetInstance()->Get_mA());
     spinboxConfigCameraW->setValue(Calculater::GetInstance()->GetCameraWidth());
     spinboxConfigCameraH->setValue(Calculater::GetInstance()->GetCameraHeight());
+    spinboxConfigQuotiety->setValue(Calculater::GetInstance()->GetQuotiety());
 }
 
 void BackTrack::DataSaveAfterClickSaveBtn()
 {
     Calculater::GetInstance()->Set_mD(spinboxConfig_mD->value());
-    Calculater::GetInstance()->Set_mD(spinboxConfig_mD->value());
+    Calculater::GetInstance()->Set_mL(spinboxConfig_mL->value());
+
+    Calculater::GetInstance()->Set_mw(spinboxConfig_mw->value());
+    Calculater::GetInstance()->Set_mh(spinboxConfig_mh->value());
+
+    Calculater::GetInstance()->Set_mB(spinboxConfig_mB->value());
+    Calculater::GetInstance()->Set_mA(spinboxConfig_mA->value());
+
+    Calculater::GetInstance()->SetCameraWidth(spinboxConfigCameraW->value());
+    Calculater::GetInstance()->SetCameraHeight(spinboxConfigCameraH->value());
+
+    Calculater::GetInstance()->SetQuotiety(spinboxConfigQuotiety->value());
 }
 
 void BackTrack::slotForwardAngleChanged(int percent)
@@ -281,5 +301,6 @@ void BackTrack::slotMainWindowShow()
 void BackTrack::slotSaveConfigData()
 {
     qDebug() << "slotSaveConfigData";
+    DataSaveAfterClickSaveBtn();
     this->configDialog->close();
 }
