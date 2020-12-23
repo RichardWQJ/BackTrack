@@ -274,14 +274,14 @@ void BackTrack::DataSaveAfterClickSaveBtn()
 
 void BackTrack::slotForwardAngleChanged(int percent)
 {
-    float angle = percent / 100.0f * 25.0f;
-    this->currAngleForward->setText(QString::number(angle));
+    float degrees = percent / 100.0f * WHEEL_DEGREES_ALPHA;
+    this->currAngleForward->setText(QString::number(degrees));
 }
 
 void BackTrack::slotBackForwardAngleChanged(int percent)
 {
-    float angle = percent / 100.0f * 25.0f;
-    this->currAngleBackForward->setText(QString::number(angle));
+    float degrees = percent / 100.0f * WHEEL_DEGREES_ALPHA;
+    this->currAngleBackForward->setText(QString::number(degrees));
 }
 
 void BackTrack::slotConfigDialogShow()
@@ -289,18 +289,15 @@ void BackTrack::slotConfigDialogShow()
     DataInitBeforeDialgDisplay();
     this->configDialog->show();
     this->hide();
-    qDebug() << "Main Window oughted to be hiden!";
 }
 
 void BackTrack::slotMainWindowShow()
 {
     this->show();
-    qDebug() << "Main Window oughted to be show!";
 }
 
 void BackTrack::slotSaveConfigData()
 {
-    qDebug() << "slotSaveConfigData";
     DataSaveAfterClickSaveBtn();
     this->configDialog->close();
 }
