@@ -111,7 +111,10 @@ void BackTrack::InitWidget()
     this->currAngleBackForward->setFixedSize(100, 40);
 
     this->paintWidget = new PaintWidget(this);
-    this->paintWidget->setBackgroundRole(QPalette::Dark);
+    this->paintWidget->setObjectName("pw");
+//    this->paintWidget->setStyleSheet("#paintWidget{background-image:url(E:/Github/BackTrack/BackTrack/test1.jpg);}");
+    this->paintWidget->setStyleSheet("#pw{background-color:red;}");
+//    this->paintWidget->setAutoFillBackground(true);
 
     QGridLayout *mainLayout1 = new QGridLayout(this);
     mainLayout1->addWidget(lableSliderForward, 0, 0);
@@ -171,7 +174,7 @@ void BackTrack::InitConfigDialog()
 
     lableConfig_mh = new QLabel(tr("camera的高度h:"));
     spinboxConfig_mh = new QDoubleSpinBox();
-    spinboxConfig_mh->setRange(1.0, 2.0);
+    spinboxConfig_mh->setRange(0.6, 1.5);
     spinboxConfig_mh->setSingleStep(0.1);
 
     lableConfig_mB = new QLabel(tr("摄像头中心线同水平面的夹角B:"));
@@ -191,7 +194,7 @@ void BackTrack::InitConfigDialog()
 
     lableConfigCameraH = new QLabel(tr("屏幕的高度H:"));
     spinboxConfigCameraH = new QDoubleSpinBox();
-    spinboxConfigCameraH->setRange(0.4, 1.0);
+    spinboxConfigCameraH->setRange(0.8, 1.5);
     spinboxConfigCameraH->setSingleStep(0.1);
 
     lableConfigQuotiety = new QLabel(tr("变化趋势放大系数:"));

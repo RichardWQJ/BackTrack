@@ -12,7 +12,7 @@
 #include <QPushButton>
 #include "paintwidget.h"
 
-#define MAIN_WIDGET_WIDTH   500
+#define MAIN_WIDGET_WIDTH   550
 #define MAIN_WIDGET_HEIGTH  700
 
 #define SLIDER_MIN_VALUE    1
@@ -36,6 +36,8 @@ public:
     void InitConfigDialog();
     void DataInitBeforeDialgDisplay();
     void DataSaveAfterClickSaveBtn();
+
+    PaintWidget *paintWidget;
 
 signals:
 public slots:
@@ -75,7 +77,7 @@ private:
     // 逆时针当前角度
     QLabel *currAngleBackForward;
 
-    PaintWidget *paintWidget;
+//    PaintWidget *paintWidget;
 
     /******************************/
     QDialog *configDialog;

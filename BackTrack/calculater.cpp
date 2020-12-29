@@ -12,33 +12,27 @@ Calculater::~Calculater()
 
 }
 
-void Calculater::InitRealVectorInfo()
-{
-    InitYRealVectorInfo();
-    for (int index = 0; index < SAMPLE_POINT_NUM; index++) {
-        QPointF pointLeft(0.9f * (-1), 0.1f * index);
-        vecPointRealLeft.push_back(pointLeft);
+//void Calculater::InitRealVectorInfo()
+//{
+//    InitYRealVectorInfo();
+//    for (int index = 0; index < SAMPLE_POINT_NUM; index++) {
+//        QPointF pointLeft(0.9f * (-1), 0.1f * index);
+//        vecPointRealLeft.push_back(pointLeft);
 
-        QPointF pointRight(0.9f, 0.1f * index);
-        vecPointRealRight.push_back(pointRight);
-    }
-}
-
-void Calculater::CalculateScreenLeftPoints(float angle)
-{
-
-}
-
-void Calculater::CalculateScreenRightPoints(float angle)
-{
-
-}
+//        QPointF pointRight(0.9f, 0.1f * index);
+//        vecPointRealRight.push_back(pointRight);
+//    }
+//}
 
 void Calculater::InitYRealVectorInfo()
 {
-#if 0
-    for (int index = 1; index <= SAMPLE_POINT_NUM; index++) {
-        vecSampleYValue.push_back(0.15f * index);
+#if 1
+    for (int index = 0; index < SAMPLE_POINT_NUM; index++) {
+        float groundYValue = 1.25f + 0.25f * index;
+        vecSampleYValue.push_back(groundYValue);
+
+        float screenYValue = 0.05f + 0.05 * index;
+        vecScreenYValue.push_back(screenYValue);
 
         QPointF pointInit(0.0f, 0.0f);
         vecScreenLeftPoint.push_back(pointInit);
@@ -46,7 +40,7 @@ void Calculater::InitYRealVectorInfo()
     }
 #endif
 
-#if 1
+#if 0
     // 地面关键点位置的Y坐标..要考虑到camera能看到的地面的Y的最小值（边界问题）
     vecSampleYValue.push_back(1.25f);
     vecSampleYValue.push_back(1.50f);
@@ -85,23 +79,24 @@ void Calculater::InitYRealVectorInfo()
 void Calculater::ComputeScreenPointsWhenForward(float angle)
 {
     for (int index = 0; index < SAMPLE_POINT_NUM; index++) {
-        float yScrean = vecScreenYValue[index]; //ComputerYr(vecSampleYValue[index]);
+        float yScrean = ComputerYr(vecSampleYValue[index]); // vecScreenYValue[index];
         float xLeft = ComputerXr_In(angle, vecSampleYValue[index]) * m_Quotiety;
+        if (isnan(xLeft)) {
+            continue;
+        }
+
         QPointF pointLeft(xLeft, yScrean);
         qDebug() << "Left: (" << xLeft << ", " << yScrean << ")";
-//        if (isnan(xLeft)) {
-//            qDebug() << "xLeft is nan! ";
-//            qDebug() << "angle: " << angle << ", vecSampleYValue[index]:" << vecSampleYValue[index];
-//        }
 
         vecScreenLeftPoint[index] = pointLeft;
         float xRight = ComputerXr_Out(angle, vecSampleYValue[index]) * m_Quotiety;
+
+        if (isnan(xRight)) {
+            continue;
+        }
+
         QPointF pointRight(xRight, yScrean);
         qDebug() << "Right: (" << xRight << ", " << yScrean << ")";
-//        if (isnan(xRight)) {
-//            qDebug() << "xRight is nan! ";
-//            qDebug() << "angle: " << angle << ", vecSampleYValue[index]:" << vecSampleYValue[index];
-//        }
 
         vecScreenRightPoint[index] = pointRight;
     }
@@ -110,24 +105,26 @@ void Calculater::ComputeScreenPointsWhenForward(float angle)
 void Calculater::ComputeScreenPointsWhenBackForward(float angle)
 {
     for (int index = 0; index < SAMPLE_POINT_NUM; index++) {
-        float yScrean = vecScreenYValue[index]; //ComputerYr(vecSampleYValue[index]);
+        float yScrean = ComputerYr(vecSampleYValue[index]); //vecScreenYValue[index];
         float xLeft = ComputerXr_In(angle, vecSampleYValue[index]) * (-1) * m_Quotiety;
+
+        if (isnan(xLeft)) {
+            continue;
+        }
+
         QPointF pointLeft(xLeft, yScrean);
         qDebug() << "Left: (" << xLeft << ", " << yScrean << ")";
-//        if (isnan(xLeft)) {
-//            qDebug() << "xLeft is nan! ";
-//            qDebug() << "angle: " << angle << ", vecSampleYValue[index]:" << vecSampleYValue[index];
-//        }
 
         vecScreenLeftPoint[index] = pointLeft;
 
         float xRight = ComputerXr_Out(angle, vecSampleYValue[index]) * (-1) * m_Quotiety;
+
+        if (isnan(xRight)) {
+            continue;
+        }
+
         QPointF pointRight(xRight, yScrean);
         qDebug() << "Right: (" << xRight << ", " << yScrean << ")";
-//        if (isnan(xRight)) {
-//            qDebug() << "xRight is nan! ";
-//            qDebug() << "angle: " << angle << ", vecSampleYValue[index]:" << vecSampleYValue[index];
-//        }
 
         vecScreenRightPoint[index] = pointRight;
     }
@@ -137,7 +134,6 @@ float Calculater::Cot(float degrees) //参数：角度
 {
     float tan = qTan(qDegreesToRadians(degrees)); //角度转弧度
     float cot = 1 / tan;
-//    qDebug() << "Cot[" << degrees << "]: " << cot;
     return cot;
 }
 
@@ -164,10 +160,11 @@ float Calculater::Cos(float degrees)
     return cos;
 }
 
-float Calculater::ArcTan(float radians) //参数：角度
+float Calculater::ArcTan(float radians) //参数：弧度
 {
-    float arcTan = qAtan(radians);
-    return arcTan;
+    float arcTanRadians = qAtan(radians);
+    float arcTanDegrees = qRadiansToDegrees(arcTanRadians);
+    return arcTanDegrees;
 }
 
 float Calculater::ComputerXr_Out(float angle, float y) {

@@ -21,6 +21,7 @@ class PaintWidget : public QWidget
     Q_OBJECT
 public:
     PaintWidget(QWidget *parent = 0);
+    void SetBackground();
 signals:
 
 public slots:
@@ -35,6 +36,7 @@ protected:
     void drawBackForwardTrack();
 
 private:
+
     QPixmap pix;
     float forwardAngle;
     float backForwardAngle;

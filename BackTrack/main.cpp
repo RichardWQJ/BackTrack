@@ -9,5 +9,8 @@ int main(int argc, char *argv[])
     BackTrack w;
     w.show();
 
+    w.paintWidget->SetBackground();
+    w.paintWidget->setAutoFillBackground(true);
+
     return a.exec();
 }
